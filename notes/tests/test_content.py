@@ -9,6 +9,7 @@ User = get_user_model()
 
 
 class TestNoteList(TestCase):
+    """Тесты списка заметок."""
     NUM_NOTE = 2
     LIST_URL = reverse('notes:list')
 
@@ -31,12 +32,14 @@ class TestNoteList(TestCase):
         )
 
     def test_numb_note(self):
+        """Проверка количества выводимых заметок."""
         self.client.force_login(self.user1)
         response = self.client.get(self.LIST_URL)
         notes_list = response.context['note_list']
         self.assertEqual(len(notes_list), self.NUM_NOTE)
 
     def test_note_order(self):
+        """Проверка порядка вывода заметок."""
         self.client.force_login(self.user1)
         response = self.client.get(self.LIST_URL)
         notes_list = response.context['note_list']
@@ -44,6 +47,7 @@ class TestNoteList(TestCase):
         self.assertEqual(id_list, sorted(id_list))
 
     def test_access_to_notes(self):
+        """Пользователь видит только свои заметки."""
         self.client.force_login(self.user2)
         response = self.client.get(self.LIST_URL)
         self.assertContains(response, self.note_us_2.title)
@@ -52,6 +56,7 @@ class TestNoteList(TestCase):
 
 
 class TestNoteDetail(TestCase):
+    """Тесты страницы заметки."""
 
     @classmethod
     def setUpTestData(cls):
@@ -64,6 +69,7 @@ class TestNoteDetail(TestCase):
         )
 
     def test_note_detail_content(self):
+        """Проверка содержимого страницы заметки."""
         self.client.force_login(self.user)
         response = self.client.get(
             reverse('notes:detail', args=(self.note.slug,))
